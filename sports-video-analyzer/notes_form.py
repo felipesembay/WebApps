@@ -29,15 +29,15 @@ notes_form = html.Div([
 def update_notes(n_clicks, note, url, cut_scene):
     cut_scene = "" if cut_scene is None else cut_scene
     url = "" if url is None else url
-    key_name = url + "-" + cut_scene
+    key_name = f"{url}-{cut_scene}"
 
     trigg = dash.callback_context.triggered[0]["prop_id"]
-    if "btn-save-note.n_clicks" == trigg:
+    if trigg == "btn-save-note.n_clicks":
         DICT_NOTES[key_name] = note
         with open('dict_notes.json', 'w') as f:
             json.dump(DICT_NOTES, f)
         return DICT_NOTES[key_name]
-        
+
     if ("video-player.url" in trigg or "dd-cut-scenes.value" in trigg) and key_name in DICT_NOTES.keys():
         return DICT_NOTES[key_name]
 

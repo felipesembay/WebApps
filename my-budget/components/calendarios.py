@@ -34,10 +34,10 @@ calendario2 = html.Div([
     Output('output_container_datepicker', 'children'),
     Input('date_picker_single', 'date'))
 def update_output(date_value):
-    string_prefix = 'Selecionado: '
     if date_value is not None:
         date_object = date.fromisoformat(date_value)
         date_string = date_object.strftime('%d %B, %Y')
+        string_prefix = 'Selecionado: '
         return string_prefix + date_string
 
 # 2
@@ -45,8 +45,8 @@ def update_output(date_value):
     Output('output_container_datepicker2', 'children'),
     Input('date_picker_single2', 'date'))
 def update_output(date_value):
-    string_prefix = 'Selecionado: '
     if date_value is not None:
         date_object = date.fromisoformat(date_value)
         date_string = date_object.strftime('%d %B, %Y')
+        string_prefix = 'Selecionado: '
         return string_prefix + date_string

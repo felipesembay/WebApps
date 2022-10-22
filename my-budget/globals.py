@@ -32,7 +32,7 @@ if ("df_cat_receita.csv" in os.listdir()) and ("df_cat_despesa.csv" in os.listdi
 else:    
     cat_receita = {'Categoria': ["Salário", "Investimentos", "Comissão"]}
     cat_despesa = {'Categoria': ["Alimentação", "Aluguel", "Gasolina", "Saúde", "Lazer"]}
-    
+
     df_cat_receita = pd.DataFrame(cat_receita, columns=['Categoria'])
     df_cat_despesa = pd.DataFrame(cat_despesa, columns=['Categoria'])
     df_cat_receita.to_csv("df_cat_receita.csv")

@@ -21,20 +21,28 @@ card_style = {
 # =========  Layout  =========== #
 def render_layout(message):
     message = "Ocorreu algum erro durante o login." if message == "error" else message
-    login = dbc.Card([
-                html.Legend("Login"),
-                dbc.Input(id="user_login", placeholder="Username", type="text"),
-                dbc.Input(id="pwd_login", placeholder="Password", type="password"),
-                dbc.Button("Login", id="login_button"),
-                html.Span(message, style={"text-align": "center"}),
-                
-                html.Div([
+    return dbc.Card(
+        [
+            html.Legend("Login"),
+            dbc.Input(id="user_login", placeholder="Username", type="text"),
+            dbc.Input(id="pwd_login", placeholder="Password", type="password"),
+            dbc.Button("Login", id="login_button"),
+            html.Span(message, style={"text-align": "center"}),
+            html.Div(
+                [
                     html.Label("Ou", style={"margin-right": "5px"}),
                     dcc.Link("Registre-se", href="/register"),
-                ], style={"padding": "20px", "justify-content": "center", "display": "flex"})
-
-            ], style=card_style, className="align-self-center") 
-    return login
+                ],
+                style={
+                    "padding": "20px",
+                    "justify-content": "center",
+                    "display": "flex",
+                },
+            ),
+        ],
+        style=card_style,
+        className="align-self-center",
+    )
 
 
 
@@ -48,17 +56,18 @@ def render_layout(message):
     State('pwd_login', 'value')],
     )
 def successful(n_clicks, username, password):
-    if n_clicks == None:
+    if n_clicks is None:
         raise PreventUpdate
 
     user = Users.query.filter_by(username=username).first()
 
-    if user and password is not None:
-        if check_password_hash(user.password, password):
-            login_user(user)
-            return "success"
-        else:
-            return "error"
+    if (
+        user
+        and password is not None
+        and check_password_hash(user.password, password)
+    ):
+        login_user(user)
+        return "success"
     else:
         return "error"
     

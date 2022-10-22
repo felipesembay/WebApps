@@ -30,9 +30,9 @@ df = pd.DataFrame({
 })
 
 
-y = datetime.datetime.today().year
-m = datetime.datetime.today().month
-h = datetime.datetime.today().day
+y = datetime.datetime.now().year
+m = datetime.datetime.now().month
+h = datetime.datetime.now().day
 
 anos_ = [(y+28) - i for i in range(51)]
 anos = list(reversed(anos_))
@@ -351,7 +351,7 @@ def render_calendar_content(botao_avanca, botao_volta, mm, yy):
 
         if d == h and meses[m-1] == meses[mm-1] and y == anos[yy-2000]:
             initial_active_cell = {'row': c, 'column' : (days_of_week.index(day)), 'column_id' : day, 'row_id' : c}
-            
+
         elif meses[m-1] != meses[mm-1] or y != anos[yy-2000]:
             if d == 1:
                 initial_active_cell = {'row': c, 'column' : (days_of_week.index(day)), 'column_id' : day, 'row_id' : c}
@@ -385,10 +385,7 @@ def update_lista_eventos(n_clicks, n_clicks2, data_conc, horario, titulo, local,
 
     changed_id = [p['prop_id'] for p in callback_context.triggered][0]
     if 'submit-tarefa' in changed_id:
-        if not horario:
-            notificacao = 'Insira um horário válido'
-            return lista_de_eventos, notificacao, horario, titulo, local, descricao
-        else:
+        if horario:
             if data_conc not in lista_de_eventos:
                 lista_de_eventos[data_conc] = []
             lista_de_eventos[data_conc].append({'horario' : horario, 'titulo' : titulo,
@@ -397,11 +394,14 @@ def update_lista_eventos(n_clicks, n_clicks2, data_conc, horario, titulo, local,
                                                         )
             lista_de_eventos['id_max'] += 1
 
+        else:
+            notificacao = 'Insira um horário válido'
+            return lista_de_eventos, notificacao, horario, titulo, local, descricao
     if 'delete_event' in changed_id and any(n_clicks2):
         dict_id = json.loads(changed_id.split(".")[0])
         idx = dict_id["index"]
         lista_de_eventos[data_conc] = [i for i in lista_de_eventos[data_conc] if i["id"] != idx]
-    
+
     horario = None
     titulo = None
     local = None
@@ -431,12 +431,12 @@ def update_card_geral(active_cell, lista_de_eventos, calendar_data, mes, ano):
     dia = calendar_data[active_cell['row']][active_cell['column_id']]
     mes = meses.index(mes) + 1
 
-    if dia == None:
+    if dia is None:
         dia = 1
-    
+
     data_conc = '{:02d}/{:02d}/{:02d}'.format(dia, mes, ano)
 
-    col = active_cell['column_id']    
+    col = active_cell['column_id']
     if col == 'SEG':
         col = 'Segunda-Feira'
     elif col == 'TER':
@@ -461,7 +461,7 @@ def update_card_geral(active_cell, lista_de_eventos, calendar_data, mes, ano):
 
     if num_eventos != 0:
         lista_ordenada_de_eventos = sorted(lista_de_eventos[data_conc], key=lambda d: d['horario']) 
-    
+
     if num_eventos == 0:
         card_tarefa = dbc.Card(
             [

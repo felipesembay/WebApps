@@ -46,93 +46,365 @@ def gerar_icones(df_proc_aux, i):
 
 # Card padrão de contagem
 def gerar_card_padrao(qnt_procs):
-    card_padrao = dbc.Card([
-        dbc.CardBody([
-            html.H3(f"{qnt_procs} PROCESSOS ENCONTRADOS", style={'font-weight': 'bold', 'color': 'white'})
-        ])
-    ], style={'height': '100%', 'margin-bottom': '12px', 'background-color': '#646464'})
-    return card_padrao
+    return dbc.Card(
+        [
+            dbc.CardBody(
+                [
+                    html.H3(
+                        f"{qnt_procs} PROCESSOS ENCONTRADOS",
+                        style={'font-weight': 'bold', 'color': 'white'},
+                    )
+                ]
+            )
+        ],
+        style={
+            'height': '100%',
+            'margin-bottom': '12px',
+            'background-color': '#646464',
+        },
+    )
 
 # Card qualquer de processo
 def gerar_card_processo(df_aux, color_c, color_v, concluido, vencido, concluido_text, vencido_text):
-    card_processo = dbc.Card([
-        dbc.CardBody([
-            dbc.Row([
-                dbc.Col([
-                    dbc.Row([
-                        dbc.Col([  
-                            html.H2(f"Processo nº {df_aux['No Processo']}")
-                        ])
-                    ]),
-                    dbc.Row([
-                        dbc.Col([  
-                            html.P("Processo corre em segredo de justiça por questões similares.", style={'text-align': 'left'})
-                        ])
-                    ]),
-                    dbc.Row([
-                        dbc.Col([
-                            html.Ul([
-                                html.Li([html.B("DATA: ", style={'font-weight': 'bold'}), f"{df_aux['Data Inicial']} - {df_aux['Data Final']}"]),
-                                html.Li([html.B("AÇÃO: ", style={'font-weight': 'bold'}), f"{df_aux['Ação']}"]),
-                                html.Li([html.B("INSTÂNCIA: ", style={'font-weight': 'bold'}), f"{df_aux['Instância']}"]),
-                                html.Li([html.B("FASE: ", style={'font-weight': 'bold'}), f"{df_aux['Fase']}"]),
-                                html.Li([html.B("DESCRIÇÃO: ", style={'font-weight': 'bold'}), f"{df_aux['Descrição']}"]),
-                            ]),
-                        ])
-                    ])
-                ], sm=12, md=6, style={'border-right': '2px solid lightgrey'}),
-                dbc.Col([
-                    dbc.Row([
-                        dbc.Col([
-                            html.Ul([
-                                html.Li([html.B("CLIENTE: ", style={'font-weight': 'bold'}), f"{df_aux['Cliente']}"]),
-                                html.Li([html.B("EMPRESA: ", style={'font-weight': 'bold'}), f"{df_aux['Empresa']}"]),
-                                html.Li([html.B("ADVOGADO: ", style={'font-weight': 'bold'}), f"{df_aux['Advogados']}"])
-                            ]),
-                        ])
-                    ], style={'margin-bottom': '32px'}),
-                    dbc.Row([
-                        dbc.Col([
-                            html.H5("STATUS", style={'margin-bottom': 0}),
-                        ], sm=5, style={'text-align': 'right'}),
-                        dbc.Col([
-                            html.I(className=f'{concluido} fa-2x dbc', style={'color': f'{color_c}'}),
-                        ], sm=2),
-                        dbc.Col([
-                            html.H5(f"{concluido_text}", style={'margin-bottom': 0}),
-                        ], sm=5, style={'text-align': 'left'}),
-                    ], style={'display': 'flex', 'align-items': 'center', 'justify-content': 'center'}),
-                    
-                    dbc.Row([
-                        dbc.Col([
-                            html.H5("RESULTADO", style={'margin-bottom': 0})
-                        ], sm=5, style={'text-align': 'right'}),
-                        dbc.Col([
-                            html.I(className=f'{vencido} fa-2x dbc', style={'color': f'{color_v}'})
-                        ], sm=2),
-                        dbc.Col([
-                            html.H5(f'{vencido_text}', style={'margin-bottom': 0})
-                        ], sm=5, style={'text-align': 'left'}),
-                    ], style={'display': 'flex', 'align-items': 'center', 'justify-content': 'center'}),
-                    html.Br(),
-                    dbc.Row([
-                        dbc.Col([ #TODO REMOVER BOTÃO FAN
-                            dbc.Button(["Botão fantasma, para solucionar o callback"], id={'type': 'ghost_processo', 'index': int(df_aux['No Processo'])}, style={'display': 'none'}),
-                        ], md=2),
-                        dbc.Col([
-                          dbc.Button([html.I(className = "fa fa-pencil fa-2x")], style={'color': 'black'}, size='sm', outline=True,
-                                id={'type': 'editar_processo', 'index': int(df_aux['No Processo'])})
-                        ], md=2),
-                        dbc.Col([
-                            dbc.Button([html.I(className = "fa fa-trash fa-2x")], style={'color': 'black'}, size='sm', outline=True,
-                                id={'type': 'deletar_processo', 'index': int(df_aux['No Processo'])})
-                        ], md=2)
-                    ], style={'display': 'flex', 'justify-content': 'flex-end'})
-                ], sm=12, md=6, style={'height': '100%', 'margin-top': 'auto', 'margin-bottom': 'auto'}),
-            ], style={'margin-top': '12px'})
-        ])
-    ], style=card_style, className='card_padrao')
-    return card_processo
+    return dbc.Card(
+        [
+            dbc.CardBody(
+                [
+                    dbc.Row(
+                        [
+                            dbc.Col(
+                                [
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                [
+                                                    html.H2(
+                                                        f"Processo nº {df_aux['No Processo']}"
+                                                    )
+                                                ]
+                                            )
+                                        ]
+                                    ),
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                [
+                                                    html.P(
+                                                        "Processo corre em segredo de justiça por questões similares.",
+                                                        style={
+                                                            'text-align': 'left'
+                                                        },
+                                                    )
+                                                ]
+                                            )
+                                        ]
+                                    ),
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                [
+                                                    html.Ul(
+                                                        [
+                                                            html.Li(
+                                                                [
+                                                                    html.B(
+                                                                        "DATA: ",
+                                                                        style={
+                                                                            'font-weight': 'bold'
+                                                                        },
+                                                                    ),
+                                                                    f"{df_aux['Data Inicial']} - {df_aux['Data Final']}",
+                                                                ]
+                                                            ),
+                                                            html.Li(
+                                                                [
+                                                                    html.B(
+                                                                        "AÇÃO: ",
+                                                                        style={
+                                                                            'font-weight': 'bold'
+                                                                        },
+                                                                    ),
+                                                                    f"{df_aux['Ação']}",
+                                                                ]
+                                                            ),
+                                                            html.Li(
+                                                                [
+                                                                    html.B(
+                                                                        "INSTÂNCIA: ",
+                                                                        style={
+                                                                            'font-weight': 'bold'
+                                                                        },
+                                                                    ),
+                                                                    f"{df_aux['Instância']}",
+                                                                ]
+                                                            ),
+                                                            html.Li(
+                                                                [
+                                                                    html.B(
+                                                                        "FASE: ",
+                                                                        style={
+                                                                            'font-weight': 'bold'
+                                                                        },
+                                                                    ),
+                                                                    f"{df_aux['Fase']}",
+                                                                ]
+                                                            ),
+                                                            html.Li(
+                                                                [
+                                                                    html.B(
+                                                                        "DESCRIÇÃO: ",
+                                                                        style={
+                                                                            'font-weight': 'bold'
+                                                                        },
+                                                                    ),
+                                                                    f"{df_aux['Descrição']}",
+                                                                ]
+                                                            ),
+                                                        ]
+                                                    ),
+                                                ]
+                                            )
+                                        ]
+                                    ),
+                                ],
+                                sm=12,
+                                md=6,
+                                style={'border-right': '2px solid lightgrey'},
+                            ),
+                            dbc.Col(
+                                [
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                [
+                                                    html.Ul(
+                                                        [
+                                                            html.Li(
+                                                                [
+                                                                    html.B(
+                                                                        "CLIENTE: ",
+                                                                        style={
+                                                                            'font-weight': 'bold'
+                                                                        },
+                                                                    ),
+                                                                    f"{df_aux['Cliente']}",
+                                                                ]
+                                                            ),
+                                                            html.Li(
+                                                                [
+                                                                    html.B(
+                                                                        "EMPRESA: ",
+                                                                        style={
+                                                                            'font-weight': 'bold'
+                                                                        },
+                                                                    ),
+                                                                    f"{df_aux['Empresa']}",
+                                                                ]
+                                                            ),
+                                                            html.Li(
+                                                                [
+                                                                    html.B(
+                                                                        "ADVOGADO: ",
+                                                                        style={
+                                                                            'font-weight': 'bold'
+                                                                        },
+                                                                    ),
+                                                                    f"{df_aux['Advogados']}",
+                                                                ]
+                                                            ),
+                                                        ]
+                                                    ),
+                                                ]
+                                            )
+                                        ],
+                                        style={'margin-bottom': '32px'},
+                                    ),
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                [
+                                                    html.H5(
+                                                        "STATUS",
+                                                        style={
+                                                            'margin-bottom': 0
+                                                        },
+                                                    ),
+                                                ],
+                                                sm=5,
+                                                style={'text-align': 'right'},
+                                            ),
+                                            dbc.Col(
+                                                [
+                                                    html.I(
+                                                        className=f'{concluido} fa-2x dbc',
+                                                        style={
+                                                            'color': f'{color_c}'
+                                                        },
+                                                    ),
+                                                ],
+                                                sm=2,
+                                            ),
+                                            dbc.Col(
+                                                [
+                                                    html.H5(
+                                                        f"{concluido_text}",
+                                                        style={
+                                                            'margin-bottom': 0
+                                                        },
+                                                    ),
+                                                ],
+                                                sm=5,
+                                                style={'text-align': 'left'},
+                                            ),
+                                        ],
+                                        style={
+                                            'display': 'flex',
+                                            'align-items': 'center',
+                                            'justify-content': 'center',
+                                        },
+                                    ),
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                [
+                                                    html.H5(
+                                                        "RESULTADO",
+                                                        style={
+                                                            'margin-bottom': 0
+                                                        },
+                                                    )
+                                                ],
+                                                sm=5,
+                                                style={'text-align': 'right'},
+                                            ),
+                                            dbc.Col(
+                                                [
+                                                    html.I(
+                                                        className=f'{vencido} fa-2x dbc',
+                                                        style={
+                                                            'color': f'{color_v}'
+                                                        },
+                                                    )
+                                                ],
+                                                sm=2,
+                                            ),
+                                            dbc.Col(
+                                                [
+                                                    html.H5(
+                                                        f'{vencido_text}',
+                                                        style={
+                                                            'margin-bottom': 0
+                                                        },
+                                                    )
+                                                ],
+                                                sm=5,
+                                                style={'text-align': 'left'},
+                                            ),
+                                        ],
+                                        style={
+                                            'display': 'flex',
+                                            'align-items': 'center',
+                                            'justify-content': 'center',
+                                        },
+                                    ),
+                                    html.Br(),
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                [  # TODO REMOVER BOTÃO FAN
+                                                    dbc.Button(
+                                                        [
+                                                            "Botão fantasma, para solucionar o callback"
+                                                        ],
+                                                        id={
+                                                            'type': 'ghost_processo',
+                                                            'index': int(
+                                                                df_aux[
+                                                                    'No Processo'
+                                                                ]
+                                                            ),
+                                                        },
+                                                        style={
+                                                            'display': 'none'
+                                                        },
+                                                    ),
+                                                ],
+                                                md=2,
+                                            ),
+                                            dbc.Col(
+                                                [
+                                                    dbc.Button(
+                                                        [
+                                                            html.I(
+                                                                className="fa fa-pencil fa-2x"
+                                                            )
+                                                        ],
+                                                        style={
+                                                            'color': 'black'
+                                                        },
+                                                        size='sm',
+                                                        outline=True,
+                                                        id={
+                                                            'type': 'editar_processo',
+                                                            'index': int(
+                                                                df_aux[
+                                                                    'No Processo'
+                                                                ]
+                                                            ),
+                                                        },
+                                                    )
+                                                ],
+                                                md=2,
+                                            ),
+                                            dbc.Col(
+                                                [
+                                                    dbc.Button(
+                                                        [
+                                                            html.I(
+                                                                className="fa fa-trash fa-2x"
+                                                            )
+                                                        ],
+                                                        style={
+                                                            'color': 'black'
+                                                        },
+                                                        size='sm',
+                                                        outline=True,
+                                                        id={
+                                                            'type': 'deletar_processo',
+                                                            'index': int(
+                                                                df_aux[
+                                                                    'No Processo'
+                                                                ]
+                                                            ),
+                                                        },
+                                                    )
+                                                ],
+                                                md=2,
+                                            ),
+                                        ],
+                                        style={
+                                            'display': 'flex',
+                                            'justify-content': 'flex-end',
+                                        },
+                                    ),
+                                ],
+                                sm=12,
+                                md=6,
+                                style={
+                                    'height': '100%',
+                                    'margin-top': 'auto',
+                                    'margin-bottom': 'auto',
+                                },
+                            ),
+                        ],
+                        style={'margin-top': '12px'},
+                    )
+                ]
+            )
+        ],
+        style=card_style,
+        className='card_padrao',
+    )
 
 
 # ========= Layout ========= #
@@ -294,43 +566,49 @@ def generate_cards(n, n_all, adv_filter, proc_button, proc_data, adv_data, switc
     # Iniciando os dataframes possíveis
     df_adv_aux = pd.DataFrame(adv_data)
     df_proc_aux = pd.DataFrame(proc_data)
-        
-    # Caso default - Todos os casos por ordem de data   
-    if (trigg_id == '' or trigg_id == 'store_proc' or trigg_id == 'store_adv' or trigg_id == 'todos_processos' or trigg_id == 'switches_input' or trigg_id == 'checklist_input'):
+
+    # Caso default - Todos os casos por ordem de data
+    if trigg_id in [
+        '',
+        'store_proc',
+        'store_adv',
+        'todos_processos',
+        'switches_input',
+        'checklist_input',
+    ]:
         if trigg_id != 'todos_processos':
             # Filtrando pelos switches
             if (1 and 2) in switches:
                 df_proc_aux = df_proc_aux.loc[(df_proc_aux['Processo Concluído'] == 1) & (df_proc_aux['Processo Vencido'] == 1)]
             elif switches == [1]: df_proc_aux = df_proc_aux.loc[df_proc_aux['Processo Concluído'] == 1]
             elif switches == [2]: df_proc_aux = df_proc_aux.loc[df_proc_aux['Processo Vencido'] == 1]
-                
+
 
             if (1 in checklist) and (2 in checklist): pass
             elif checklist == [1]: df_proc_aux = df_proc_aux.loc[df_proc_aux['Instância'] == 1]
             elif checklist == [2]: df_proc_aux = df_proc_aux.loc[df_proc_aux['Instância'] == 2]
-            
+
         df_proc_aux = df_proc_aux.sort_values(by='Data Inicial', ascending=False)
 
         df_proc_aux.loc[df_proc_aux['Processo Concluído'] == 0, 'Processo Concluído'] = 'Não'
         df_proc_aux.loc[df_proc_aux['Processo Concluído'] == 1, 'Processo Concluído'] = 'Sim'
         df_proc_aux.loc[df_proc_aux['Processo Vencido'] == 0, 'Processo Vencido'] = 'Não'
         df_proc_aux.loc[df_proc_aux['Processo Vencido'] == 1, 'Processo Vencido'] = 'Sim'
-        
+
         df_proc_aux = df_proc_aux.fillna('-')
 
         # Inserido o card padrão com a quantidade de processos
         qnt_procs = len(df_proc_aux)
         cards += [gerar_card_padrao(qnt_procs)]
-        
+
         # Iterando sobre os processos
         for i in range(len(df_proc_aux)):
             df_aux, concluido, vencido, color_c, color_v, concluido_text, vencido_text = gerar_icones(df_proc_aux, i)
             card = gerar_card_processo(df_aux, color_c, color_v, concluido, vencido, concluido_text, vencido_text)
             cards += [card]
-        
+
         return cards, None, None, None
 
-    # Pesquisa de texto por número de processo
     elif (trigg_id == 'pesquisar_num_proc'):
         # Dados
         df_proc_aux = df_proc_aux.loc[df_proc_aux['No Processo'] == proc_filter].sort_values(by='Data Inicial', ascending=False)
@@ -359,7 +637,6 @@ def generate_cards(n, n_all, adv_filter, proc_button, proc_data, adv_data, switc
 
         return cards, None, proc_filter, None
 
-    # Pesquisa de cliente por CPF
     elif trigg_id == 'pesquisar_cpf':
         if cpf in df_proc['Cpf Cliente'].values:
 
@@ -400,7 +677,6 @@ def generate_cards(n, n_all, adv_filter, proc_button, proc_data, adv_data, switc
                 card = gerar_card_processo(df_aux, color_c, color_v, concluido, vencido, concluido_text, vencido_text)
                 cards += [card]
 
-            return cards, None, None, cpf
         else:
             card = dbc.Card([
                 dbc.CardBody([
@@ -415,16 +691,14 @@ def generate_cards(n, n_all, adv_filter, proc_button, proc_data, adv_data, switc
                 ])
             ], style=card_style)
             cards += [card]
-            return cards, None, None, cpf
-    
-    # Filtro DROPDOWN de advogados
+        return cards, None, None, cpf
     elif (trigg_id == 'advogados_filter'):
         # Dados
         df_aux = df_adv_aux.loc[df_adv_aux['Advogado'] == adv_filter]
         nome = df_aux.iloc[0]['Advogado']
         oab = df_aux.iloc[0]['OAB']
         cpf = df_aux.iloc[0]['CPF']
-        
+
         # Card do Advogado
         card_adv = dbc.Card([
             dbc.CardBody([

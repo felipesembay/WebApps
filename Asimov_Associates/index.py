@@ -57,7 +57,7 @@ app.layout = dbc.Container(children=[
 # URL callback to update page content
 @app.callback(Output('page-content', 'children'), Input('url', 'pathname'))
 def render_page_content(pathname):
-    if pathname == '/home' or pathname == '/':
+    if pathname in ['/home', '/']:
         return home.layout
     return dbc.Container([
             html.H1("404: Not found", className="text-danger"),

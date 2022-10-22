@@ -40,30 +40,26 @@ def load_user(user_id):
             ])
 def render_page_content(login_state, register_state):
     ctx = dash.callback_context
-    if ctx.triggered:
-        trigg_id = ctx.triggered[0]['prop_id'].split('.')[0]
-        
-        if trigg_id == 'login-state' and login_state == "success":
-            return '/data'
-        if trigg_id == 'login-state' and login_state == "error":
-            return '/login'
-        
-
-        elif trigg_id == 'register-state':
-            print(register_state, register_state=='')
-            if register_state == "":
-                return '/login'
-            else:
-                return '/register'
-    else:
+    if not ctx.triggered:
         return '/'
+    trigg_id = ctx.triggered[0]['prop_id'].split('.')[0]
+
+    if trigg_id == 'login-state' and login_state == "success":
+        return '/data'
+    if trigg_id == 'login-state' and login_state == "error":
+        return '/login'
+
+
+    elif trigg_id == 'register-state':
+        print(register_state, register_state=='')
+        return '/login' if register_state == "" else '/register'
 
 
 @app.callback(Output("page-content", "children"), 
             Input("base-url", "pathname"),
             [State("login-state", "data"), State("register-state", "data")])
 def render_page_content(pathname, login_state, register_state):
-    if (pathname == "/login" or pathname == "/"):
+    if pathname in ["/login", "/"]:
         return login.render_layout(login_state)
 
     if pathname == "/register":

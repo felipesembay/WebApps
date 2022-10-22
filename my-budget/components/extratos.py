@@ -40,7 +40,7 @@ layout = dbc.Col([
     Output('tabela-despesas', 'children'),
     Input('store-despesas', 'data')
 )
-def imprimir_tabela (data):
+def imprimir_tabela(data):
     df = pd.DataFrame(data)
     df['Data'] = pd.to_datetime(df['Data']).dt.date
 
@@ -54,27 +54,37 @@ def imprimir_tabela (data):
 
     df.sort_values(by='Data', ascending=False)
 
-    tabela = dash_table.DataTable(
-        id='datatable-interactivity',
-        columns=[
-            {"name": i, "id": i, "deletable": False, "selectable": False, "hideable": True}
-            if i == "Descrição" or i == "Fixo" or i == "Efetuado"
-            else {"name": i, "id": i, "deletable": False, "selectable": False}
-            for i in df.columns
-        ],
-
-        data=df.to_dict('records'),
-        filter_action="native",    
-        sort_action="native",       
-        sort_mode="single",  
-        selected_columns=[],        
-        selected_rows=[],          
-        page_action="native",      
-        page_current=0,             
-        page_size=10,                        
-    ),
-
-    return tabela
+    return (
+        dash_table.DataTable(
+            id='datatable-interactivity',
+            columns=[
+                {
+                    "name": i,
+                    "id": i,
+                    "deletable": False,
+                    "selectable": False,
+                    "hideable": True,
+                }
+                if i in ["Descrição", "Fixo", "Efetuado"]
+                else {
+                    "name": i,
+                    "id": i,
+                    "deletable": False,
+                    "selectable": False,
+                }
+                for i in df.columns
+            ],
+            data=df.to_dict('records'),
+            filter_action="native",
+            sort_action="native",
+            sort_mode="single",
+            selected_columns=[],
+            selected_rows=[],
+            page_action="native",
+            page_current=0,
+            page_size=10,
+        ),
+    )
 
 # Bar Graph            
 @app.callback(

@@ -24,21 +24,31 @@ card_style = {
 def render_layout(message):
     message = "Ocorreu algum erro durante o registro." if message == "error" else message
 
-    layout = dbc.Card([
-                html.Legend("Registrar"),
-                dbc.Input(id="user_register", placeholder="Username", type="text"),
-                dbc.Input(id="pwd_register", placeholder="Password", type="password"),
-                dbc.Input(id="email_register", placeholder="E-mail", type="email"),
-                dbc.Button("Registrar", id='register-button'),
-                html.Span(message, style={"text-align": "center"}),
-
-                html.Div([
+    return dbc.Card(
+        [
+            html.Legend("Registrar"),
+            dbc.Input(id="user_register", placeholder="Username", type="text"),
+            dbc.Input(
+                id="pwd_register", placeholder="Password", type="password"
+            ),
+            dbc.Input(id="email_register", placeholder="E-mail", type="email"),
+            dbc.Button("Registrar", id='register-button'),
+            html.Span(message, style={"text-align": "center"}),
+            html.Div(
+                [
                     html.Label("Ou ", style={"margin-right": "5px"}),
                     dcc.Link("faça login", href="/login"),
-                ], style={"padding": "20px", "justify-content": "center", "display": "flex"})
-
-            ], style=card_style, className="align-self-center")
-    return layout
+                ],
+                style={
+                    "padding": "20px",
+                    "justify-content": "center",
+                    "display": "flex",
+                },
+            ),
+        ],
+        style=card_style,
+        className="align-self-center",
+    )
 
 
 
@@ -52,7 +62,7 @@ def render_layout(message):
     State('email_register', 'value')],
     )
 def successful(n_clicks, username, password, email):
-    if n_clicks == None:
+    if n_clicks is None:
         raise PreventUpdate
 
     if username is not None and password is not None and email is not None:
