@@ -28,19 +28,31 @@ fig = px.line(df, x=df.index, y="data", template="quartz")
 
 # =========  Layout  =========== #
 def render_layout(username):
-    template = html.Div([
-            dbc.Card([
-                dcc.Location(id="data-url"), 
-                html.Legend("Olá, {}!".format(username)),
-                dcc.Graph(figure=fig),
-
-                html.Div([
-                    dbc.Button("Logout", id="logout_button"),
-                ], style={"padding": "20px", "justify-content": "end", "display": "flex"})
-
-            ], style=card_style, className="align-self-center")
-        ], className="col d-flex justify-content-center", style={"height": "100vh", "vertical-align": "middle"})
-    return template 
+    return html.Div(
+        [
+            dbc.Card(
+                [
+                    dcc.Location(id="data-url"),
+                    html.Legend(f"Olá, {username}!"),
+                    dcc.Graph(figure=fig),
+                    html.Div(
+                        [
+                            dbc.Button("Logout", id="logout_button"),
+                        ],
+                        style={
+                            "padding": "20px",
+                            "justify-content": "end",
+                            "display": "flex",
+                        },
+                    ),
+                ],
+                style=card_style,
+                className="align-self-center",
+            )
+        ],
+        className="col d-flex justify-content-center",
+        style={"height": "100vh", "vertical-align": "middle"},
+    ) 
 
 
 # =========  Callbacks Page1  =========== #
@@ -49,12 +61,10 @@ def render_layout(username):
     Input('logout_button', 'n_clicks'),
     )
 def successful(n_clicks):
-    if n_clicks == None:
+    if n_clicks is None:
         raise PreventUpdate
-    
+
     if current_user.is_authenticated:
         logout_user()
-        return '/login'
-    else: 
-        return '/login'
+    return '/login'
 

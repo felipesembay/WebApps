@@ -70,9 +70,7 @@ l_controls = dbc.Col([
     [State("collapse", "is_open")],
 )
 def toggle_collapse(n, is_open):
-    if n:
-        return not is_open
-    return is_open
+    return not is_open if n else is_open
 
 @app.callback(Output('video-player', 'url'),
               [Input('dd-my-videos', 'value')])
@@ -104,12 +102,18 @@ def update_btn_end1(n_clicks, value):
               State('rd-cut-kind', 'value'), State('dd-cut-scenes', 'value')])
 def create_cut_1(create_cut, delete_cut, url, start, end,
                 cut_name, cut_kind, selected_scene):
-    if "btn-create-cut.n_clicks" == dash.callback_context.triggered[0]["prop_id"]:
+    if (
+        dash.callback_context.triggered[0]["prop_id"]
+        == "btn-create-cut.n_clicks"
+    ):
         start = float(start.split(":")[1])
         end = float(end.split(":")[1])
-        DICT_SCENES[url][cut_kind.upper() + " : " + cut_name] = [start, end]
-    
-    elif "btn-delete-cut.n_clicks" == dash.callback_context.triggered[0]["prop_id"]:
+        DICT_SCENES[url][f"{cut_kind.upper()} : {cut_name}"] = [start, end]
+
+    elif (
+        dash.callback_context.triggered[0]["prop_id"]
+        == "btn-delete-cut.n_clicks"
+    ):
         if selected_scene is not None:
             del DICT_SCENES[url][selected_scene]
 

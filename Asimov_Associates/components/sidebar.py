@@ -51,9 +51,7 @@ layout = dbc.Container([
     State('modal_new_lawyer', "is_open")
 )
 def toggle_modal(n, n2, is_open):
-    if n or n2:
-        return not is_open
-    return is_open
+    return not is_open if n or n2 else is_open
 
 # Abrir Modal Lawyers
 @app.callback(
@@ -64,6 +62,4 @@ def toggle_modal(n, n2, is_open):
     State('modal_lawyers', "is_open")
 )
 def toggle_modal(n, n2, n3, is_open):
-    if n or n2 or n3:
-        return not is_open
-    return is_open
+    return not is_open if n or n2 or n3 else is_open

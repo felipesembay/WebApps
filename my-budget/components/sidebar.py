@@ -368,7 +368,7 @@ def add_category(n, n2, txt, check_delete, data):
     style1 = {}
 
     if n:
-        if txt == "" or txt == None:
+        if txt == "" or txt is None:
             txt1 = "O campo de texto não pode estar vazio para o registro de uma nova categoria."
             style1 = {'color': 'red'}
 
@@ -376,11 +376,10 @@ def add_category(n, n2, txt, check_delete, data):
             cat_despesa = cat_despesa + [txt] if txt not in cat_despesa else cat_despesa
             txt1 = f'A categoria {txt} foi adicionada com sucesso!'
             style1 = {'color': 'green'}
-    
-    if n2:
-        if len(check_delete) > 0:
-            cat_despesa = [i for i in cat_despesa if i not in check_delete]  
-    
+
+    if n2 and len(check_delete) > 0:
+        cat_despesa = [i for i in cat_despesa if i not in check_delete]  
+
     opt_despesa = [{"label": i, "value": i} for i in cat_despesa]
     df_cat_despesa = pd.DataFrame(cat_despesa, columns=['Categoria'])
     df_cat_despesa.to_csv("df_cat_despesa.csv")
@@ -412,21 +411,18 @@ def add_category(n, n2, txt, check_delete, data):
     style1 = {}
 
     if n:
-        if txt == "" or txt == None:
+        if txt == "" or txt is None:
             txt1 = "O campo de texto não pode estar vazio para o registro de uma nova categoria."
             style1 = {'color': 'red'}
 
-    if n and not(txt == "" or txt == None):
-        cat_receita = cat_receita + [txt] if txt not in cat_receita else cat_receita
-        txt1 = f'A categoria {txt} foi adicionada com sucesso!'
-        style1 = {'color': 'green'}
-    
-    if n2:
-        if check_delete == []:
-            pass
-        else:
-            cat_receita = [i for i in cat_receita if i not in check_delete]  
-    
+        if txt != "" and txt is not None:
+            cat_receita = cat_receita + [txt] if txt not in cat_receita else cat_receita
+            txt1 = f'A categoria {txt} foi adicionada com sucesso!'
+            style1 = {'color': 'green'}
+
+    if n2 and check_delete != []:
+        cat_receita = [i for i in cat_receita if i not in check_delete]  
+
     opt_receita = [{"label": i, "value": i} for i in cat_receita]
     df_cat_receita = pd.DataFrame(cat_receita, columns=['Categoria'])
     df_cat_receita.to_csv("df_cat_receita.csv")
@@ -454,19 +450,18 @@ def add_category(n, n2, txt, check_delete, data):
 def salve_form_receita(n, descricao, valor, date, switches, categoria, dict_receitas):
     df_receitas = pd.DataFrame(dict_receitas)
 
-    if n and not(valor == "" or valor== None):
+    if n and valor != "" and valor is not None:
         valor = round(float(valor), 2)
         date = pd.to_datetime(date).date()
         categoria = categoria[0] if type(categoria) == list else categoria
 
         recebido = 1 if 1 in switches else 0
-        fixo = 0 if 2 in switches else 0
+        fixo = 0
 
         df_receitas.loc[df_receitas.shape[0]] = [valor, recebido, fixo, date, categoria, descricao]
         df_receitas.to_csv("df_receitas.csv")
 
-    data_return = df_receitas.to_dict()
-    return data_return
+    return df_receitas.to_dict()
 
 
 # Enviar Form despesa
@@ -486,19 +481,18 @@ def salve_form_receita(n, descricao, valor, date, switches, categoria, dict_rece
 def salve_form_despesa(n, valor, switches, descricao, date, txt, dict_despesas):
     df_despesas = pd.DataFrame(dict_despesas)
 
-    if n and not(valor == "" or valor== None):
+    if n and valor != "" and valor is not None:
         valor = round(valor, 2)
         date = pd.to_datetime(date).date()
         categoria = categoria[0] if type(categoria) == list else categoria
 
         recebido = 1 if 1 in switches else 0
-        fixo = 0 if 2 in switches else 0
-        
-        if descricao == None or descricao == "":
+        fixo = 0
+
+        if descricao is None or descricao == "":
             descricao = 0
 
         df_despesas.loc[df_despesas.shape[0]] = [valor, recebido, fixo, date, descricao, txt]
         df_despesas.to_csv("df_despesas.csv")
 
-    data_return = df_despesas.to_dict()
-    return data_return
+    return df_despesas.to_dict()

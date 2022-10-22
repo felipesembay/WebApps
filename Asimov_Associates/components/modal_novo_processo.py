@@ -149,11 +149,11 @@ layout = dbc.Modal([
 )
 def abrir_modal_processo(n_editar, n_new, n_cancel, is_open, store_proc, store_intermedio):
     trigg_id = callback_context.triggered[0]['prop_id'].split('.')[0]
-    first_call = True if callback_context.triggered[0]['value'] == None else False
+    first_call = callback_context.triggered[0]['value'] is None
     if first_call:
         return is_open, store_intermedio
 
-    if (trigg_id == 'processo_button') or (trigg_id == 'cancel_button_novo_processo'):
+    if trigg_id in ['processo_button', 'cancel_button_novo_processo']:
         df_int = pd.DataFrame(store_intermedio)
         df_int = df_int[:-1]
         store_intermedio = df_int.to_dict()
@@ -221,7 +221,11 @@ def abrir_modal_processo(n_editar, n_new, n_cancel, is_open, store_proc, store_i
     prevent_initial_call=True
 )
 def crud_processos(n_new, n_save, n_delete, store_int, is_open, store_proc, no_processo, empresa, tipo, acao, vara, fase, instancia, data_inicial, data_final, processo_concluido, processo_vencido, advogados, cliente, cpf_cliente, desc):
-    first_call = True if (callback_context.triggered[0]['value'] == None or callback_context.triggered[0]['value'] == False) else False
+    first_call = (
+        callback_context.triggered[0]['value'] is None
+        or callback_context.triggered[0]['value'] == False
+    )
+
     trigg_id = callback_context.triggered[0]['prop_id'].split('.')[0]
 
     if first_call:
@@ -232,32 +236,27 @@ def crud_processos(n_new, n_save, n_delete, store_int, is_open, store_proc, no_p
     if trigg_id == 'save_button_novo_processo':
         df_proc = pd.DataFrame(store_proc)
         df_int = pd.DataFrame(store_int)
-        
+
         if len(df_int.index) == 0: # Novo processo
             if None in [no_processo, empresa, tipo, acao, vara, fase, instancia, data_inicial, advogados, cliente, cpf_cliente]:
                 return store_proc, ["Todos dados são obrigatórios para registro!"], {'margin-bottom': '15px', 'color': 'red'}, no_processo, empresa, tipo, acao, vara, fase, instancia, data_inicial, data_final, processo_concluido, processo_vencido, advogados, cliente, cpf_cliente, desc, False
             if (no_processo in df_proc['No Processo'].values):
                 return store_proc, ["Número de processo ja existe no sistema!"], {'margin-bottom': '15px', 'color': 'red'}, no_processo, empresa, tipo, acao, vara, fase, instancia, data_inicial, data_final, processo_concluido, processo_vencido, advogados, cliente, cpf_cliente, desc, False
-            
+
             data_inicial = pd.to_datetime(data_inicial).date()
             try:
                 data_final = pd.to_datetime(data_final).date()
             except:
                 pass
-                
+
             df_proc.reset_index(drop=True, inplace=True)
-            
+
             processo_concluido = 0 if processo_concluido == False else 1
             processo_vencido = 0 if processo_vencido == False else 1
             if processo_concluido == 0: data_final = None
 
             df_proc.loc[df_proc.shape[0]] = [no_processo, empresa, tipo, acao, vara, fase, instancia, data_inicial, data_final,
                                             processo_concluido, processo_vencido, advogados, cliente, cpf_cliente, desc]
-            
-            store_proc = df_proc.to_dict()
-            no_processo = empresa = tipo = acao = vara = fase = instancia = data_inicial = data_final = advogados = cliente = cpf_cliente = desc = None
-            processo_concluido = processo_vencido = False
-            return store_proc, ['Processo salvo com sucesso!'], {'margin-bottom': '15px', 'color': 'green'}, no_processo, empresa, tipo, acao, vara, fase, instancia, data_inicial, data_final, processo_concluido, processo_vencido, advogados, cliente, cpf_cliente, desc, False
 
         else:   # Edição de processo
             processo_concluido = 0 if processo_concluido == False else 1
@@ -266,12 +265,11 @@ def crud_processos(n_new, n_save, n_delete, store_int, is_open, store_proc, no_p
 
             index = df_proc.loc[df_proc['No Processo'] == no_processo].index[0]
             df_proc.loc[index, df_proc.columns] = [no_processo, empresa, tipo, acao, vara, fase, instancia, data_inicial, data_final, processo_concluido, processo_vencido, advogados, cliente, cpf_cliente, desc]
-            
-            store_proc = df_proc.to_dict()
-            no_processo = empresa = tipo = acao = vara = fase = instancia = data_inicial = data_final = advogados = cliente = cpf_cliente = desc = None
-            processo_concluido = processo_vencido = False
-            
-            return store_proc, ['Processo salvo com sucesso!'], {'margin-bottom': '15px', 'color': 'green'}, no_processo, empresa, tipo, acao, vara, fase, instancia, data_inicial, data_final, processo_concluido, processo_vencido, advogados, cliente, cpf_cliente, desc, False
+
+        processo_concluido = processo_vencido = False
+        store_proc = df_proc.to_dict()
+        no_processo = empresa = tipo = acao = vara = fase = instancia = data_inicial = data_final = advogados = cliente = cpf_cliente = desc = None
+        return store_proc, ['Processo salvo com sucesso!'], {'margin-bottom': '15px', 'color': 'green'}, no_processo, empresa, tipo, acao, vara, fase, instancia, data_inicial, data_final, processo_concluido, processo_vencido, advogados, cliente, cpf_cliente, desc, False
 
     if 'deletar_processo' in trigg_id:
         df_proc = pd.DataFrame(store_proc)
@@ -296,8 +294,8 @@ def crud_processos(n_new, n_save, n_delete, store_int, is_open, store_proc, no_p
 
             no_processo, empresa, tipo, acao, vara, fase, instancia, data_inicial, data_final, processo_concluido, processo_vencido, advogados, cliente, cpf_cliente, desc, disabled = valores
 
-            processo_concluido = False if processo_concluido == 0 else True
-            processo_vencido = False if processo_vencido == 0 else True
+            processo_concluido = processo_concluido != 0
+            processo_vencido = processo_vencido != 0
 
             return store_proc, ['Modo de Edição: Número de Processo não pode ser alterado'], {'margin-bottom': '15px', 'color': 'green'}, no_processo, empresa, tipo, acao, vara, fase, instancia, data_inicial, data_final, processo_concluido, processo_vencido, advogados, cliente, cpf_cliente, desc, disabled
         except:

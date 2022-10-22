@@ -79,12 +79,18 @@ def update_btn_end1(n_clicks, value):
 def create_cut_1(create_cut, delete_cut, start, end, duration, 
                 cut_name, url, cut_kind, selected_scene):
     global DICT_SCENES
-    if "btn-create-cut-r.n_clicks" == dash.callback_context.triggered[0]["prop_id"]:
+    if (
+        dash.callback_context.triggered[0]["prop_id"]
+        == "btn-create-cut-r.n_clicks"
+    ):
         start = float(start.split(":")[1])
         end = float(end.split(":")[1])
-        DICT_SCENES[url][cut_kind.upper() + " : " + cut_name] = [start, end]
-    
-    elif "btn-delete-cut-r.n_clicks" == dash.callback_context.triggered[0]["prop_id"]:
+        DICT_SCENES[url][f"{cut_kind.upper()} : {cut_name}"] = [start, end]
+
+    elif (
+        dash.callback_context.triggered[0]["prop_id"]
+        == "btn-delete-cut-r.n_clicks"
+    ):
         if selected_scene is not None:
             del DICT_SCENES[url][selected_scene]
 
